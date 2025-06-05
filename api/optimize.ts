@@ -13,7 +13,7 @@ export async function OPTIONS(request: Request) {
   const headers = {
     'Access-Control-Allow-Origin': allowedOrigins.includes(origin) ? origin : '',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Headers': 'X-Model, Content-Type',
   };
 
   return new Response(null, {
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
   const origin = request.headers.get('origin') || '';
   const headers = {
     'Access-Control-Allow-Origin': allowedOrigins.includes(origin) ? origin : '',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Headers': 'X-Model, Content-Type',
     'Content-Type': 'application/json',
   };
 

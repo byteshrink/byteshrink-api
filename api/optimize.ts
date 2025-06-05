@@ -12,7 +12,7 @@ export async function OPTIONS(request: Request) {
   const origin = request.headers.get('origin') || '';
   const headers = {
     'Access-Control-Allow-Origin': allowedOrigins.includes(origin) ? origin : '',
-    'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
   };
 
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
     if (!dependencies && !devDependencies) {
       return new Response(JSON.stringify({ error: 'Missing dependencies in request body' }), {
         status: 400,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { ...headers, 'Content-Type': 'application/json' },
       });
     }
 
@@ -69,19 +69,19 @@ export async function POST(request: Request) {
       console.error('⚠️ No usable content in LLM response:', JSON.stringify(json, null, 2));
       return new Response(JSON.stringify({ error: 'Empty or malformed LLM response' }), {
         status: 502,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { ...headers, 'Content-Type': 'application/json' }
       });
     }
 
     return new Response(JSON.stringify({ suggestions: reply }), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { ...headers, 'Content-Type': 'application/json' }
     });
   } catch (err) {
     console.error('💥 Error in API handler:', err);
     return new Response(JSON.stringify({ error: 'Internal error' }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { ...headers, 'Content-Type': 'application/json' }
     });
   }
 }

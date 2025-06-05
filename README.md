@@ -1,1 +1,1 @@
-# byteshrink-api
+# ByteShrink AI API

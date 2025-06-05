@@ -2,16 +2,36 @@ export const config = {
   runtime: 'edge',
 };
 
-export default async function handler(req: Request): Promise<Response> {
-  if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Only POST allowed' }), {
-      status: 405,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
+const allowedOrigins = [
+  'https://byteshrink.dev',
+  'https://www.byteshrink.dev',
+  'http://localhost:3000', // for local dev
+];
+
+export async function OPTIONS(request: Request) {
+  const origin = request.headers.get('origin') || '';
+  const headers = {
+    'Access-Control-Allow-Origin': allowedOrigins.includes(origin) ? origin : '',
+    'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  };
+
+  return new Response(null, {
+    status: 204,
+    headers,
+  });
+}
+
+export async function POST(request: Request) {
+  const origin = request.headers.get('origin') || '';
+  const headers = {
+    'Access-Control-Allow-Origin': allowedOrigins.includes(origin) ? origin : '',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Content-Type': 'application/json',
+  };
 
   try {
-    const body = await req.json();
+    const body = await request.json();
     const { dependencies, devDependencies } = body;
 
     if (!dependencies && !devDependencies) {
@@ -24,7 +44,7 @@ export default async function handler(req: Request): Promise<Response> {
     const prompt = buildPrompt(dependencies, devDependencies);
     console.log('Sending prompt to OpenRouter:', prompt);
 
-    const model = req.headers.get('x-model') || 'deepseek/deepseek-r1:free';
+    const model = request.headers.get('x-model') || 'deepseek/deepseek-r1:free';
 
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',

@@ -1,4 +1,4 @@
-# ByteShrink AI API
+# ByteShrink API
 
 Serverless backend for analyzing `package.json` files using LLMs via OpenRouter.
 

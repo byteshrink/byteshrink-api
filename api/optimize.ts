@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     const prompt = buildPrompt(dependencies, devDependencies);
     console.log('Sending prompt to OpenRouter:', prompt);
 
-    const model = request.headers.get('x-model') || 'mistralai/mistral‑7b‑instruct:free';
+    const model = request.headers.get('x-model') || 'anthropic/claude-3.7-sonnet';
 
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
